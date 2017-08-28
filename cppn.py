@@ -51,7 +51,7 @@ keras.activations.sin = K.sin
 
 
 def weight_init(shape, dtype=None):
-    return K.random_normal(shape, stddev=0.5, dtype=dtype)
+    return K.random_normal(shape, stddev=1 / np.sqrt(N), dtype=dtype)
 
 
 def random_cppn(min_layers=2, max_layers=10):
@@ -62,6 +62,7 @@ def random_cppn(min_layers=2, max_layers=10):
         x2 = Dense(N, kernel_initializer=weight_init, input_dim=N)(x)
         x3 = Activation(random.choice(activations))(x2)
         x = add([x, x3])
+    x = Activation('sigmoid')(x)  # final activation
     return Model(inputs=[input], outputs=[x]), np.random.uniform(0, 1, N - 4)
 
 
